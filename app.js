@@ -27,19 +27,32 @@ async function scrapeSearch(queryString) {
   const { data } = await axios.get(searchUrl)
 
   const $ = cheerio.load(data)
+  
+  // Artists and songs result
   const results = $('#s_main tbody tr')
 
   let songs = []
 
   results.each((i, el) => {
-    const artist = $(el).children("td:first").text().substring(1);
+    // Get artist name
+    const artist = $("td > a", el)
+    const basePath = artist.attr("href").match(/[^\/]\w*\/$/)[0]
+
+    // Get songs
     $("li", el).each((i, li) => {
+      const name = $(li).text()
+      
+      // Replace spaces with underscores
+      let songPath =  name.replace(/\s/g, "_")
+      // Replace spanish special characters
+      songPath = songPath.normalize("NFD").replace(/\p{Diacritic}/gu, "")
+      
       songs.push({
-        artist,
-        name: $(li).text()
+        artist: artist.text(),
+        name,
+        path: basePath + songPath
       })
     })
   })
-
   return songs
 }
