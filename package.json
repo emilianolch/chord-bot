@@ -23,6 +23,7 @@
   "homepage": "https://github.com/emilianolch/lacuerda#readme",
   "dependencies": {
     "axios": "^0.22.0",
+    "cheerio": "^1.0.0-rc.10",
     "dotenv": "^10.0.0",
     "node-telegram-bot-api": "^0.54.0"
   }
