@@ -14,16 +14,32 @@ bot.onText(/^\/start$/, (msg) => {
 
 // Search for a song
 bot.onText(/^[^\/].*/, async (msg) => {
+  const songs = await scrapeSearch(msg.text)
+  const message = songs.slice(0, 5).map(song => `${song.artist} - ${song.name}`).join('\n')
+
+  bot.sendMessage(msg.chat.id, message)
+})
+
+// Make a search query to lacuerda.net
+async function scrapeSearch(queryString) {
   const baseUrl = "https://acordes.lacuerda.net/busca.php?canc=0&exp="
-  const searchUrl = baseUrl + encodeURIComponent(msg.text)
+  const searchUrl = baseUrl + encodeURIComponent(queryString)
   const { data } = await axios.get(searchUrl)
-  
+
   const $ = cheerio.load(data)
   const results = $('#s_main tbody tr')
 
-  results.each((i, el) => {
-    console.log($(el).text())
-  })
-  bot.sendMessage(msg.chat.id, msg.text)
+  let songs = []
 
-})
+  results.each((i, el) => {
+    const artist = $(el).children("td:first").text().substring(1);
+    $("li", el).each((i, li) => {
+      songs.push({
+        artist,
+        name: $(li).text()
+      })
+    })
+  })
+
+  return songs
+}
