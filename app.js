@@ -26,48 +26,37 @@ async function scrapeSearch(queryString) {
   const searchUrl = baseUrl + encodeURIComponent(queryString)
   const { data } = await axios.get(searchUrl)
 
-  const fn = data.match(/fn=.+?;/)[0]
-  // fn=''+hds[n]+'/'+fns[n];
-  // fn=''+hds[NMAX-n]+'/'+fns[NMAX-n];
-  // fn=''+hds[NMAX-n]+'/'+fns[n];
-  // fn=''+hds[n]+'/'+fns[n];
-
+  // This is for scrape the URIs of the songs
+  const fn = data.match(/fn=(.+?);/)[1]
   const hds = eval(data.match(/hds=(\[.*?\])/)[1])
   const fns = eval(data.match(/fns=(\[.*?\])/)[1])
-  const nmax = data.match(/NMAX=\d*/)[0]
+  const NMAX = Number.parseInt(data.match(/NMAX=(\d*)/)[1])
+  const path = (n) => eval(fn)
 
-  console.log(fn)
-  console.log(nmax)
-  console.log(hds)
-  console.log(fns)
-
+  // Parse html
   const $ = cheerio.load(data)
-  
-  // Artists and songs result
+
+  // Get the list of artists and their songs
   const results = $('#s_main tbody tr')
 
   let songs = []
 
   results.each((i, el) => {
     // Get artist name
-    const artist = $("td > a", el)
-    const basePath = artist.attr("href").match(/[^\/]\w*\/$/)[0]
+    const artist = $("td > a", el).text()
 
     // Get songs
     $("li", el).each((i, li) => {
       const name = $(li).text()
-      
-      // Replace spaces with underscores
-      let songPath =  name.replace(/\s/g, "_")
-      // Replace spanish special characters
-      songPath = songPath.normalize("NFD").replace(/\p{Diacritic}/gu, "")
-      
+      const n = Number.parseInt($(li).attr('id').substring(1))
+
       songs.push({
-        artist: artist.text(),
+        artist,
         name,
-        path: basePath + songPath
+        path: path(n)
       })
     })
   })
+
   return songs
 }
