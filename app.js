@@ -26,6 +26,21 @@ async function scrapeSearch(queryString) {
   const searchUrl = baseUrl + encodeURIComponent(queryString)
   const { data } = await axios.get(searchUrl)
 
+  const fn = data.match(/fn=.+?;/)[0]
+  // fn=''+hds[n]+'/'+fns[n];
+  // fn=''+hds[NMAX-n]+'/'+fns[NMAX-n];
+  // fn=''+hds[NMAX-n]+'/'+fns[n];
+  // fn=''+hds[n]+'/'+fns[n];
+
+  const hds = eval(data.match(/hds=(\[.*?\])/)[1])
+  const fns = eval(data.match(/fns=(\[.*?\])/)[1])
+  const nmax = data.match(/NMAX=\d*/)[0]
+
+  console.log(fn)
+  console.log(nmax)
+  console.log(hds)
+  console.log(fns)
+
   const $ = cheerio.load(data)
   
   // Artists and songs result
