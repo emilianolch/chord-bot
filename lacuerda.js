@@ -43,5 +43,20 @@ exports.scrapeSearch = async (queryString) => {
 
 // Find a song and return best version
 exports.findSong = async (path) => {
-  console.log(path)
+  const baseUrl = "https://acordes.lacuerda.net/"
+  const songUrl = baseUrl + path
+
+  // First, load the versions page
+  let { data } = await axios.get(songUrl)
+  let $ = cheerio.load(data)
+
+  // Scrape best version
+  const index = $('#rThumbs ul li:first').attr('onclick')
+    .match(/\d+/)[0]
+  const versionUrl = index === "1" ? songUrl + ".shtml" : `${songUrl}-${index}.shtml`
+
+  // Load version page
+  data = (await axios.get(versionUrl)).data
+  $ = cheerio.load(data)
+  return $('#t_body').html()
 }
