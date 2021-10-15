@@ -40,3 +40,8 @@ exports.scrapeSearch = async (queryString) => {
 
   return songs
 }
+
+// Find a song and return best version
+exports.findSong = async (path) => {
+  console.log(path)
+}
