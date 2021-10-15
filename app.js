@@ -33,7 +33,7 @@ bot.onText(/^[^\/].*/, async (msg) => {
 
 // Song selected
 bot.on('callback_query', async (query) => {
-  const song = await lacuerda.findSong(query.data)
-  bot.sendMessage(query.message.chat.id, "done!")
+  const lyrics = await lacuerda.findSong(query.data)
+  bot.sendMessage(query.message.chat.id, lyrics, { parse_mode: "HTML" })
   bot.answerCallbackQuery(query.id)
 })

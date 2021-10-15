@@ -58,5 +58,7 @@ exports.findSong = async (path) => {
   // Load version page
   data = (await axios.get(versionUrl)).data
   $ = cheerio.load(data)
+ 
+  $('#t_body div').remove()
   return $('#t_body').html()
 }
