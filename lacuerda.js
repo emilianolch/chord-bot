@@ -32,8 +32,7 @@ exports.scrapeSearch = async (queryString) => {
       const n = Number.parseInt($(li).attr('id').substring(1))
 
       songs.push({
-        artist,
-        name,
+        title: `${artist} - ${name}`,
         path: path(n)
       })
     })

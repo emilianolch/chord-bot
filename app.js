@@ -13,9 +13,21 @@ bot.onText(/^\/start$/, (msg) => {
 
 // Search for a song
 bot.onText(/^[^\/].*/, async (msg) => {
-  const songs = await lacuerda.scrapeSearch(msg.text)
-  const message = songs.slice(0, 5).map(song => `${song.artist} - ${song.name}`).join('\n')
+  const songs = (await lacuerda.scrapeSearch(msg.text)).slice(0, 5)
 
-  bot.sendMessage(msg.chat.id, message)
+  // Song not found
+  if (songs.length === 0) {
+    bot.sendMessage(msg.chat.id, "Lo siento, no pude encontrar esa canción :-(")
+    return
+  }
+
+  const opts = {
+    reply_markup: JSON.stringify({
+      inline_keyboard: songs.map(song => [{ text: song.title, callback_data: song.path }]),
+      remove_keyboard: true, // not working
+    }),
+  };
+
+  bot.sendMessage(msg.chat.id, "Selecciona una de estas canciones", opts)
 })
 
