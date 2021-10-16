@@ -1,6 +1,7 @@
 require('dotenv').config()
 const lacuerda = require('./lacuerda')
 const TelegramBot = require('node-telegram-bot-api')
+const nodeHtmlToImage = require('node-html-to-image');
 
 const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true })
 
@@ -34,6 +35,9 @@ bot.onText(/^[^\/].*/, async (msg) => {
 // Song selected
 bot.on('callback_query', async (query) => {
   const lyrics = await lacuerda.findSong(query.data)
+  const image = await nodeHtmlToImage({ html: lyrics })
+
   bot.sendMessage(query.message.chat.id, lyrics, { parse_mode: "HTML" })
+  //bot.sendPhoto(query.message.chat.id, image)
   bot.answerCallbackQuery(query.id)
 })
