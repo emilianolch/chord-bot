@@ -9,7 +9,7 @@ exports.scrapeSearch = async (queryString) => {
 
   // This is for scrape the URIs of the songs
   let path;
-  
+
   try {
     const fn = data.match(/fn=(.+?);/)[1]
     const hds = eval(data.match(/hds=(\[.*?\])/)[1])
@@ -66,10 +66,17 @@ exports.findSong = async (path) => {
   // Load version page
   data = (await axios.get(versionUrl)).data
   $ = cheerio.load(data)
- 
-   $('#t_body div').remove()
-  const msg = ('🔃 <i>Si el contenido no se ve correctamente rotá la pantalla.</i>\n\n')
-  const document = msg + $('#t_body').html()
 
-  return document;
+  // Remove Telegram unsupported tags
+  $('#t_body div').remove()
+
+  const songName = $('#tH1 h1 a').text()
+  const artistName = $('#tH1 h2 a').text()
+  const document = $('#t_body')
+
+  // Add header and footer
+  document.prepend(`<strong>${songName}</strong>\n${artistName}\n\n`)
+  document.append('\n\n🔃 Si el contenido no se ve correctamente rotá la pantalla.')
+
+  return document.html();
 }
