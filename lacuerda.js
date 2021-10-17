@@ -8,11 +8,19 @@ exports.scrapeSearch = async (queryString) => {
   const { data } = await axios.get(searchUrl)
 
   // This is for scrape the URIs of the songs
-  const fn = data.match(/fn=(.+?);/)[1]
-  const hds = eval(data.match(/hds=(\[.*?\])/)[1])
-  const fns = eval(data.match(/fns=(\[.*?\])/)[1])
-  const NMAX = Number.parseInt(data.match(/NMAX=(\d*)/)[1])
-  const path = (n) => eval(fn)
+  let path;
+  
+  try {
+    const fn = data.match(/fn=(.+?);/)[1]
+    const hds = eval(data.match(/hds=(\[.*?\])/)[1])
+    const fns = eval(data.match(/fns=(\[.*?\])/)[1])
+    const NMAX = Number.parseInt(data.match(/NMAX=(\d*)/)[1])
+    path = (n) => eval(fn)
+  }
+  catch {
+    // No search results
+    return []
+  }
 
   // Parse html
   const $ = cheerio.load(data)

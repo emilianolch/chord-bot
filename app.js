@@ -18,7 +18,7 @@ bot.onText(/^[^\/].*/, async (msg) => {
 
   // Song not found
   if (songs.length === 0) {
-    bot.sendMessage(msg.chat.id, "Lo siento, no pude encontrar esa canción :-(")
+    bot.sendMessage(msg.chat.id, "Lo siento, no pude encontrar esa canción. Recordá ingresar el nombre de la canción y el intérprete.")
     return
   }
 
@@ -29,7 +29,7 @@ bot.onText(/^[^\/].*/, async (msg) => {
     }),
   };
 
-  bot.sendMessage(msg.chat.id, "Selecciona una de estas canciones", opts)
+  bot.sendMessage(msg.chat.id, "Seleccioná una de estas canciones", opts)
 })
 
 // Song selected
