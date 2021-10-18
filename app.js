@@ -22,22 +22,32 @@ bot.onText(/^[^\/].*/, async (msg) => {
     return
   }
 
+  // If there is only one result, send it to the client.
+  if (songs.length === 1) {
+    return sendSong(msg.chat.id, songs[0].path)
+  }
+
+  // Display the inline keyboard to select from the first five results.
   const opts = {
     reply_markup: JSON.stringify({
       inline_keyboard: songs.map(song => [{ text: song.title, callback_data: song.path }]),
-      remove_keyboard: true, // not working
     }),
   };
-
   bot.sendMessage(msg.chat.id, "Seleccioná una de estas canciones", opts)
 })
 
-// Song selected
+// Song selected from inline keyboard
 bot.on('callback_query', async (query) => {
-  const lyrics = await lacuerda.findSong(query.data)
-  const image = await nodeHtmlToImage({ html: lyrics })
-
-  bot.sendMessage(query.message.chat.id, lyrics, { parse_mode: "HTML" })
-  //bot.sendPhoto(query.message.chat.id, image)
+  await sendSong(query.message.chat.id, query.data)
   bot.answerCallbackQuery(query.id)
 })
+
+// Send song
+async function sendSong(chatId, songPath) {
+  const lyrics = await lacuerda.findSong(songPath)
+  bot.sendMessage(chatId, lyrics, { parse_mode: "HTML" })
+}
+
+
+//const image = await nodeHtmlToImage({ html: lyrics })
+//bot.sendPhoto(query.message.chat.id, image)
