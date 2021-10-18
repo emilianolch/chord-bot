@@ -1,8 +1,12 @@
 require('dotenv').config()
 const lacuerda = require('./lacuerda')
 const TelegramBot = require('node-telegram-bot-api')
-const nodeHtmlToImage = require('node-html-to-image');
+//const nodeHtmlToImage = require('node-html-to-image');
 
+// Telegram maximum message length
+const MAX_LENGTH = 4096
+
+// Initialize the bot
 const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true })
 
 // Start message
@@ -44,10 +48,30 @@ bot.on('callback_query', async (query) => {
 
 // Send song
 async function sendSong(chatId, songPath) {
-  const lyrics = await lacuerda.findSong(songPath)
-  bot.sendMessage(chatId, lyrics, { parse_mode: "HTML" })
+  const document = await lacuerda.findSong(songPath)
+
+  if (document.length > MAX_LENGTH) {
+    return sendMultiplePages(chatId, document)
+  }
+
+  bot.sendMessage(chatId, document, { parse_mode: "HTML" })
 }
 
+// Split document in pages smaller than maximum message length.
+async function sendMultiplePages(chatId, document) {
 
-//const image = await nodeHtmlToImage({ html: lyrics })
+  // The document must be splited at a blank line, 
+  // so first find all occurrences of two new line characters in a row.
+  const matches = [...document.matchAll(/\n\n/g)]
+
+  // Select last match with index lesser than max length.
+  const indexes = matches.map(m => m.index).filter(i => i < MAX_LENGTH)
+  const splitIndex = indexes[indexes.length - 1]
+
+  console.log(splitIndex)
+  // TODO
+  // Make a recursive method that also appends <pre> tags
+}
+
+//const image = await nodeHtmlToImage({ html: document })
 //bot.sendPhoto(query.message.chat.id, image)
