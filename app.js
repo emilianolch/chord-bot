@@ -49,28 +49,43 @@ bot.on('callback_query', async (query) => {
 // Send song
 async function sendSong(chatId, songPath) {
   const document = await lacuerda.findSong(songPath)
-
   if (document.length > MAX_LENGTH) {
-    return sendMultiplePages(chatId, document)
+    sendPages(chatId, document)
   }
-
-  bot.sendMessage(chatId, document, { parse_mode: "HTML" })
+  else {
+    bot.sendMessage(chatId, document, { parse_mode: "HTML" })
+  }
 }
 
 // Split document in pages smaller than maximum message length.
-async function sendMultiplePages(chatId, document) {
+// This needs some testing. I don't know if it actually works.
+async function sendPages(chatId, document) {
+  // We need enough space to add <pre> tags if required.
+  const max = MAX_LENGTH - 7
 
   // The document must be splited at a blank line, 
   // so first find all occurrences of two new line characters in a row.
   const matches = [...document.matchAll(/\n\n/g)]
 
   // Select last match with index lesser than max length.
-  const indexes = matches.map(m => m.index).filter(i => i < MAX_LENGTH)
+  const indexes = matches.map(m => m.index).filter(i => i < max)
   const splitIndex = indexes[indexes.length - 1]
 
-  console.log(splitIndex)
-  // TODO
-  // Make a recursive method that also appends <pre> tags
+  // Split the document
+  const page = document.slice(0, splitIndex)
+  const rest = document.slice(splitIndex)
+
+  // Add pre tags if required
+  if (!page.match(/<pre>/)) page = "<pre>" + page
+  if (!page.match(/<\/pre>/)) page = page + "</pre>"
+
+  // Send page
+  await bot.sendMessage(chatId, page, { parse_mode: "HTML" })
+
+  // Send the rest of the document
+  if (rest.length > 0) {
+    sendPages(chatId, rest)
+  }
 }
 
 //const image = await nodeHtmlToImage({ html: document })
