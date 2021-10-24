@@ -49,6 +49,8 @@ bot.on('callback_query', async (query) => {
 // Send song
 async function sendSong(chatId, songPath) {
   const document = await lacuerda.findSong(songPath)
+  console.info(new Date().toString() + " GET " + songPath)
+
   if (document.length > MAX_LENGTH) {
     sendPages(chatId, document)
   }
