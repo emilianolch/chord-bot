@@ -1,0 +1,6 @@
+{
+  "compilerOptions": {
+    "sourceRoot": "./src",
+    "outDir": "./dist"
+  }
+}
