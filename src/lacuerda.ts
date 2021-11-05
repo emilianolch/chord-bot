@@ -1,5 +1,6 @@
 import axios from 'axios'
 import cheerio from 'cheerio'
+import { Song } from './types'
 
 // Make a search query to lacuerda.net
 export const scrapeSearch = async (queryString: string) => {
@@ -28,7 +29,7 @@ export const scrapeSearch = async (queryString: string) => {
   // Get the list of artists and their songs
   const results = $('#s_main tbody tr')
 
-  let songs = []
+  let songs: Song[]
 
   results.each((i, el) => {
     // Get artist name

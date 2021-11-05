@@ -1,5 +1,6 @@
-import dotenv from 'dotenv'
+import { Song } from './types'
 import * as lacuerda from './lacuerda'
+import dotenv from 'dotenv'
 import TelegramBot from 'node-telegram-bot-api'
 //const nodeHtmlToImage = require('node-html-to-image');
 
@@ -20,7 +21,7 @@ bot.onText(/^\/start$/, (msg) => {
 
 // Search for a song
 bot.onText(/^[^\/].*/, async (msg) => {
-  const songs = (await lacuerda.scrapeSearch(msg.text)).slice(0, 5)
+  const songs: Song[] = (await lacuerda.scrapeSearch(msg.text)).slice(0, 5)
 
   // Song not found
   if (songs.length === 0) {

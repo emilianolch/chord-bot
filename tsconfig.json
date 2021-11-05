@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
     "sourceRoot": "./src",
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "downlevelIteration": true
   }
 }
