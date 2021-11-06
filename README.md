@@ -11,7 +11,8 @@ There is a live version of this bot (it only speaks Spanish). Just contact [@Let
 * Contact the BotFather and create a bot.
 * Create the file `.env` in the root of your cloned repository and put your bot's API token into it:   
 `BOT_TOKEN=<your-bot-api-token>`
-* Start server: `npm start`
+* Transpile to Javascript: `tsc`
+* Start server: `node dist/main.js`
 
 ## TODO
 * Split response message when is >4096 characters (WIP)
