@@ -35,12 +35,13 @@ bot.onText(/^[^\/].*/, async (msg) => {
   }
 
   // Display the inline keyboard to select from the first five results.
-  const opts = {
-    reply_markup: JSON.stringify({
-      inline_keyboard: songs.map(song => [{ text: song.title, callback_data: song.path }]),
-    }),
-  };
-  bot.sendMessage(msg.chat.id, "Seleccioná una de estas canciones", opts)
+  bot.sendMessage(msg.chat.id, "Seleccioná una de estas canciones", {
+    reply_markup: {
+      inline_keyboard: songs.map(song => [<TelegramBot.InlineKeyboardButton>{
+        text: song.title, callback_data: song.path
+      }])
+    }
+  })
 })
 
 // Song selected from inline keyboard

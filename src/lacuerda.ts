@@ -29,7 +29,7 @@ export const scrapeSearch = async (queryString: string) => {
   // Get the list of artists and their songs
   const results = $('#s_main tbody tr')
 
-  let songs: Song[]
+  let songs: Song[] = []
 
   results.each((i, el) => {
     // Get artist name
