@@ -38,7 +38,7 @@ bot.onText(/^[^\/].*/, async (msg) => {
   bot.sendMessage(msg.chat.id, "Seleccioná una de estas canciones", {
     reply_markup: {
       inline_keyboard: songs.map(song => [<TelegramBot.InlineKeyboardButton>{
-        text: song.title, callback_data: song.path
+        text: song.label(), callback_data: song.path
       }])
     }
   })

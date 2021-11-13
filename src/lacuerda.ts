@@ -39,11 +39,7 @@ export const scrapeSearch = async (queryString: string) => {
     $("li", el).each((i, li) => {
       const name = $(li).text()
       const n = Number.parseInt($(li).attr('id').substring(1))
-
-      songs.push({
-        title: `${artist} - ${name}`,
-        path: path(n)
-      })
+      songs.push(new Song(name, artist, path(n)))
     })
   })
 

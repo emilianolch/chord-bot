@@ -2,7 +2,7 @@
   "name": "chord-bot",
   "version": "1.0.0",
   "description": "Telegram bot for getting song chords from lacuerda.net",
-  "main": "server.js",
+  "main": "./dist/main.js",
   "scripts": {
     "dev": "nodemon ./server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
