@@ -1,8 +1,8 @@
 import { Song } from './types'
 import * as lacuerda from './lacuerda'
 import dotenv from 'dotenv'
-import TelegramBot from 'node-telegram-bot-api'
-//const nodeHtmlToImage = require('node-html-to-image');
+import TelegramBot, { SendMessageOptions } from 'node-telegram-bot-api'
+import nodeHtmlToImage, { NodeHtmlToImageOptions } from 'node-html-to-image'
 
 dotenv.config()
 
@@ -46,7 +46,15 @@ bot.onText(/^[^\/].*/, async (msg) => {
 
 // Song selected from inline keyboard
 bot.on('callback_query', async (query) => {
-  await sendSong(query.message.chat.id, query.data)
+  const imgRegex = /^CHORD_BOT_IMAGE(.*)/
+
+  if (imgRegex.test(query.data)) {
+    // User requested the song as image
+    await sendImage(query.message.chat.id, query.data.match(imgRegex)[1])
+  }
+  else {
+    await sendSong(query.message.chat.id, query.data)
+  }
   bot.answerCallbackQuery(query.id)
 })
 
@@ -59,9 +67,33 @@ async function sendSong(chatId: number, songPath: string) {
     sendPages(chatId, document)
   }
   else {
-    bot.sendMessage(chatId, document, { parse_mode: "HTML" })
+    const opts: SendMessageOptions = {
+      parse_mode: 'HTML',
+      reply_markup: {
+        inline_keyboard: [[<TelegramBot.InlineKeyboardButton>{
+          text: 'Imagen', callback_data: `CHORD_BOT_IMAGE${songPath}`
+        }]]
+      }
+    }
+    bot.sendMessage(chatId, document, opts)
   }
 }
+
+// Send song as image
+async function sendImage(chatId: number, songPath: string) {
+  const document = await lacuerda.findSong(songPath)
+  const opts: NodeHtmlToImageOptions = {
+    html: document,
+    // puppeteerArgs: {
+    //   defaultViewport: {
+    //     isMobile: true
+    //   }
+    // }
+  }
+  const image = await nodeHtmlToImage(opts) as Buffer
+  bot.sendPhoto(chatId, image)
+}
+
 
 // Split document in pages smaller than maximum message length.
 // This needs some testing. I don't know if it actually works.
@@ -93,6 +125,3 @@ async function sendPages(chatId: number, document: string) {
     sendPages(chatId, rest)
   }
 }
-
-//const image = await nodeHtmlToImage({ html: document })
-//bot.sendPhoto(query.message.chat.id, image)
