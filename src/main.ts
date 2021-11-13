@@ -84,11 +84,12 @@ async function sendImage(chatId: number, songPath: string) {
   const document = await lacuerda.findSong(songPath)
   const opts: NodeHtmlToImageOptions = {
     html: document,
-    // puppeteerArgs: {
-    //   defaultViewport: {
-    //     isMobile: true
-    //   }
-    // }
+    puppeteerArgs: {
+      defaultViewport: {
+        width: 480,
+        height: 853
+      }
+    }
   }
   const image = await nodeHtmlToImage(opts) as Buffer
   bot.sendPhoto(chatId, image)
