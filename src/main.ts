@@ -2,7 +2,7 @@ import { Song } from './types'
 import * as lacuerda from './lacuerda'
 import dotenv from 'dotenv'
 import TelegramBot, { SendMessageOptions } from 'node-telegram-bot-api'
-import nodeHtmlToImage, { NodeHtmlToImageOptions } from 'node-html-to-image'
+//import nodeHtmlToImage, { NodeHtmlToImageOptions } from 'node-html-to-image'
 
 dotenv.config()
 
@@ -69,11 +69,11 @@ async function sendSong(chatId: number, songPath: string) {
   else {
     const opts: SendMessageOptions = {
       parse_mode: 'HTML',
-      reply_markup: {
-        inline_keyboard: [[<TelegramBot.InlineKeyboardButton>{
-          text: 'Imagen', callback_data: `CHORD_BOT_IMAGE${songPath}`
-        }]]
-      }
+      // reply_markup: {
+      //   inline_keyboard: [[<TelegramBot.InlineKeyboardButton>{
+      //     text: 'Imagen', callback_data: `CHORD_BOT_IMAGE${songPath}`
+      //   }]]
+      // }
     }
     bot.sendMessage(chatId, document, opts)
   }
@@ -81,18 +81,18 @@ async function sendSong(chatId: number, songPath: string) {
 
 // Send song as image
 async function sendImage(chatId: number, songPath: string) {
-  const document = await lacuerda.findSong(songPath)
-  const opts: NodeHtmlToImageOptions = {
-    html: document,
-    puppeteerArgs: {
-      defaultViewport: {
-        width: 480,
-        height: 853
-      }
-    }
-  }
-  const image = await nodeHtmlToImage(opts) as Buffer
-  bot.sendPhoto(chatId, image)
+  // const document = await lacuerda.findSong(songPath)
+  // const opts: NodeHtmlToImageOptions = {
+  //   html: document,
+  //   puppeteerArgs: {
+  //     defaultViewport: {
+  //       width: 480,
+  //       height: 853
+  //     }
+  //   }
+  // }
+  // const image = await nodeHtmlToImage(opts) as Buffer
+  // bot.sendPhoto(chatId, image)
 }
 
 
