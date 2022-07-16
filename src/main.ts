@@ -10,6 +10,10 @@ const url = process.env.APP_URL || `https://${process.env.HEROKU_APP_NAME}.herok
 const port = Number(process.env.PORT)
 const token = process.env.BOT_TOKEN
 
+console.log(`url: ${url}`)
+console.log(`port: ${port}`)
+console.log(`token: ${token}`)
+
 // Telegram maximum message length
 const MAX_LENGTH = 4096
 
@@ -23,10 +27,6 @@ const bot = new TelegramBot(token, options)
 
 // Inform Telegram servers of the new webhook
 bot.setWebHook(`${url}/bot${token}`)
-
-console.log(`url: ${url}`)
-console.log(`port: ${port}`)
-console.log(`token: ${token}`)
 
 // Start message
 bot.onText(/^\/start$/, (msg) => {
