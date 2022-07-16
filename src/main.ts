@@ -6,21 +6,27 @@ import TelegramBot, { SendMessageOptions } from 'node-telegram-bot-api'
 
 dotenv.config()
 
+const url = process.env.APP_URL || `https://${process.env.HEROKU_APP_NAME}.herokuapp.com`
+const port = Number(process.env.PORT)
+const token = process.env.BOT_TOKEN
+
 // Telegram maximum message length
 const MAX_LENGTH = 4096
 
 // Initialize the bot
 const options = {
   webHook: {
-    port: Number(process.env.PORT)
+    port: port
   }
 }
-const token = process.env.BOT_TOKEN
 const bot = new TelegramBot(token, options)
 
 // Inform Telegram servers of the new webhook
-const url = process.env.APP_URL
 bot.setWebHook(`${url}/bot${token}`)
+
+console.log(`url: ${url}`)
+console.log(`port: ${port}`)
+console.log(`token: ${token}`)
 
 // Start message
 bot.onText(/^\/start$/, (msg) => {
