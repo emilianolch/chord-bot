@@ -10,7 +10,17 @@ dotenv.config()
 const MAX_LENGTH = 4096
 
 // Initialize the bot
-const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true })
+const options = {
+  webHook: {
+    port: Number(process.env.PORT)
+  }
+}
+const token = process.env.BOT_TOKEN
+const bot = new TelegramBot(token, options)
+
+// Inform Telegram servers of the new webhook
+const url = process.env.APP_URL
+bot.setWebHook(`${url}/bot${token}`)
 
 // Start message
 bot.onText(/^\/start$/, (msg) => {
